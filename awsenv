@@ -1,0 +1,64 @@
+#!/bin/bash
+
+set -e
+
+profile() {
+  local root="$PWD"
+
+  while ! [[ "$root" =~ ^//[^/]*$ ]]; do
+    [ -e "${root}/.aws-profile" ] && break
+    [ -n "$root" ] || break
+    root="${root%/*}"
+  done
+
+  if [ -n "$root" ]; then
+    cat "${root}/.aws-profile"
+  else
+    echo "default"
+  fi
+}
+
+hook_zsh() {
+  echo '_awsenv_hook() {
+  export AWS_PROFILE=$(awsenv profile)
+}
+
+typeset -ga precmd_functions;
+if [[ -z ${precmd_functions[(r)_awsenv_hook]} ]]; then
+  precmd_functions+=_awsenv_hook;
+fi
+'
+}
+
+hook_bash() {
+  echo '_awsenv_hook() {
+  local previous_exit_status=$?;
+  export AWS_PROFILE=$(awsenv profile)
+  return $previous_exit_status;
+};
+if ! [[ "$PROMPT_COMMAND" =~ _awsenv_hook ]]; then
+  PROMPT_COMMAND="_awsenv_hook;$PROMPT_COMMAND";
+fi
+'
+}
+
+command="$1"
+case "$command" in
+  "hook")
+    shell="$2"
+    case "$shell" in
+      "zsh")
+        hook_zsh
+        ;;
+      "bash")
+        hook_bash
+        ;;
+      *)
+        echo "shell `$shell` is not unsupported yet." >> /dev/stderr
+        ;;
+    esac
+    ;;
+  "profile")
+    profile
+    ;;
+esac
