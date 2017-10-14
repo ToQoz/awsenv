@@ -36,7 +36,7 @@ show current profile in prompt:
 update_prompt() {
   aws_prof=$AWS_PROFILE
   RPROMPT=""
-  RPROMPT="$RPROMPT (aws:${aws_prof:=default})"
+  RPROMPT="$RPROMPT (aws:${aws_prof})"
   # others ...
 }
 add-zsh-hook precmd update_prompt
