@@ -5,16 +5,20 @@ set -e
 profile() {
   local root="$PWD"
 
-  while ! [[ "$root" =~ ^//[^/]*$ ]]; do
-    [ -e "${root}/.aws-profile" ] && break
-    [ -n "$root" ] || break
-    root="${root%/*}"
-  done
-
-  if [ -n "$root" ]; then
-    cat "${root}/.aws-profile"
+  if [ -n "$AWS_ACCESS_KEY_ID" ]; then
+    echo ""
   else
-    echo "default"
+    while ! [[ "$root" =~ ^//[^/]*$ ]]; do
+      [ -e "${root}/.aws-profile" ] && break
+      [ -n "$root" ] || break
+      root="${root%/*}"
+    done
+
+    if [ -n "$root" ]; then
+      cat "${root}/.aws-profile"
+    else
+      echo "default"
+    fi
   fi
 }
 
