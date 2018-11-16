@@ -60,7 +60,7 @@ case "$command" in
         hook_bash
         ;;
       *)
-        echo "$shell is not unsupported yet." >> /dev/stderr
+        echo "$shell is not supported yet." >> /dev/stderr
         ;;
     esac
     ;;
