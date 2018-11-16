@@ -23,6 +23,7 @@ profile() {
 }
 
 hook_zsh() {
+  # shellcheck disable=SC2016
   echo '_awsenv_hook() {
   export AWS_PROFILE=$(awsenv profile)
 }
@@ -35,6 +36,7 @@ fi
 }
 
 hook_bash() {
+  # shellcheck disable=SC2016
   echo '_awsenv_hook() {
   local previous_exit_status=$?;
   export AWS_PROFILE=$(awsenv profile)
@@ -58,7 +60,7 @@ case "$command" in
         hook_bash
         ;;
       *)
-        echo "shell `$shell` is not unsupported yet." >> /dev/stderr
+        echo "$shell is not unsupported yet." >> /dev/stderr
         ;;
     esac
     ;;
